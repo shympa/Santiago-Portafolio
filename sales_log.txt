@@ -1,0 +1,55 @@
+#include "SalesManager.h"
+#include <iostream>
+#include <iomanip>
+#include <ctime>
+#include <sstream>
+
+SalesManager::SalesManager(std::string file)
+{
+    filename = file;
+    logStream.open(filename, std::ios::app);
+
+    if (!logStream)
+    {
+        std::cout << "Could not open sales log file!\n";
+    }
+}
+
+SalesManager::~SalesManager()
+{
+    if (logStream.is_open())
+        logStream.close();
+
+    std::cout << "Sales Manager is going home for the evening...\n";
+}
+
+std::string SalesManager::getCurrentDate()
+{
+    std::time_t now = std::time(nullptr);
+    std::tm ltm;
+    localtime_s(&ltm, &now);
+
+    std::ostringstream ss;
+    ss << std::put_time(&ltm, "%Y-%m-%d");
+    return ss.str();
+}
+
+std::string SalesManager::getCurrentTime()
+{
+    std::time_t now = std::time(nullptr);
+    std::tm ltm;
+    localtime_s(&ltm, &now);
+
+    std::ostringstream ss;
+    ss << std::put_time(&ltm, "%I:%M %p");
+    return ss.str();
+}
+
+void SalesManager::logPurchase(std::string seat, double price)
+{
+    if (!logStream) return;
+
+    logStream << getCurrentDate() << "  "
+              << getCurrentTime() << "  "
+              << seat << "  $" << price << "\n";
+}
